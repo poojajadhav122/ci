@@ -169,7 +169,53 @@ function deletecart()
    $msg="product updated";
    $cnt =count($result);
    echo $cnt."#".$msg;
+} 
+
+public function registerAction(){
+	//print_r($_POST);
+	$this->form_validation->set_rules('log_name','User name','trim|required|min_length[3]|alpha_numeric_spaces');
+
+	$this->form_validation->set_rules('log_mobile','User Mobile','trim|required|regex_match[/^[1-9][0-9]{9}$/]|exact_length[10]');
+
+	$this->form_validation->set_rules('log_email','User Email','trim|required|valid_email|is_unique[login.log_email]');
+
+	$this->form_validation->set_rules('log_password','User Password','trim|required|alpha_numeric|min_length[4]|max_length[12]');
+
+	$this->form_validation->set_rules('log_cpassword','Password Comfirmation','required|matches[log_password]');
+
+	if($this->form_validation->run()== false){
+		echo validation_errors();
+	}
+	else{
+		//echo "ok";
+		$this->load->model('project_model');
+		$_POST['log_password']=do_hash($_POST['log_password']);
+		unset($_POST['log_cpassword']);
+		print_r($_POST);
+		$ans = $this->project_model->insertData("login",$_POST); 
+		if($ans){
+			echo "User Added";
+		}
+	}
 }
+
+
+public function loginAction(){
+	print_r($_POST);
+
+	$this->form_validation->set_rules('log_email','User Email','trim|required|valid_email');
+
+	$this->form_validation->set_rules('log_password','User Password','trim|required|alpha_numeric|min_length[4]|max_length[12]');
+
+	if($this->form_validation->run() == false){
+		echo validation_errors();
+	}
+	else{
+		ech
+		o "ok";
+	}
+
+} 
 }
 
 ?>
