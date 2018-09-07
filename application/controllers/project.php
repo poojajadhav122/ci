@@ -2,6 +2,11 @@
 defined('BASEPATH') OR exit('no direct script access allowed');
 
 class project extends CI_Controller{
+	public function __construct(){
+		parent::__construct();
+		$this->load->model('project_model');
+		header('Access-Control-Allow-Origin: *');
+	}
 	public function index()
 	{
 		$this->load->view('index');
@@ -211,11 +216,36 @@ public function loginAction(){
 		echo validation_errors();
 	}
 	else{
-		ech
-		o "ok";
+		
+		//echo  "ok";
+		$_POST['log_password']=do_hash($_POST['log_password']);
+		if($this->project_model->auth($_POST))
+		{
+			//echo "valid";
+			$ans_users=$this->project_model->getuserdata($_POST['log_email']);
+			if($ans_users[0]['log_status']==0){
+				echo "verfiy your account";
+			}
+			else{
+				$this->session->set_userdata("log_id",$ans_users[0]['log_id']);
+			$this->session->set_userdata("log_name",$ans_users[0]['log_name']);
+			$this->session->set_userdata("log_mobile",$ans_users[0]['log_mobile']);
+			$this->session->set_userdata("log_email",$ans_users[0]['log_email']);
+			$this->session->set_userdata("log_status",$ans_users[0]['log_status']);
+			echo "ok";
+
+			
+			// print_r($ans_users);
+			//$_SESSION[xyz]=111
+			
+		}
+	}
+		else{
+			echo "Invalid login";
+		}
 	}
 
 } 
 }
 
-?>
+?>s

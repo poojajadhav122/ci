@@ -43,9 +43,32 @@ function insertData($table,$data){
 	return $this->db->insert($table,$data);
 }
 
+function auth($data){
+	//print_r($data);
 
- }
+	$result = $this->db->select("log_password")->get_where("login",array("log_email"=>$data['log_email']))->result_array();
+	//print_r($result);
 
+	if(count($result)>0){
+		if($data['log_password']==$result[0]['log_password']){
+			return true;
 
+		}
+		else{
+			//invalid password\
+			return false;
+			}
+	}
+    else{
+			return false;
+		}
+	}
+
+	function getuserdata($email){
+		return $this->db->get_where("login",array("log_email"=>$email))->
+		result_array();
+	}
+
+}
 
 ?>
