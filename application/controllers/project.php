@@ -193,24 +193,42 @@ public function registerAction(){
 	}
 	else{
 		//echo "ok";
-		$this->load->model('project_model');
+		//$this->load->model('project_model');
 		$_POST['log_password']=do_hash($_POST['log_password']);
 		unset($_POST['log_cpassword']);
 		print_r($_POST);
 		$ans = $this->project_model->insertData("login",$_POST); 
 		if($ans){
+
+			$this->email->set_mailtype("html");
+			$this->email->from('vishal@php-training.in','Vishal');
+			$this->email->to($_POST['log_email']);
+
+			$this->email->subject('Email Test');
+			$base = base_url();
+			$msg = "<a href='".$base."index.php/project/verifyAccount/1/$ans'>verify</a>";
+			$this->email->message($msg);
+
+			$re = $this->email->send();
+			var_dump($re);
+
 			echo "User Added";
 		}
 	}
 }
 
+public function verifyAccount($status,$id){
+	$this->project_model->update_status($status.$id);
 
+	redirect("http://localhost/eshopperci/login.html");
+}
 public function loginAction(){
-	print_r($_POST);
+	// print_r($_POST);
 
 	$this->form_validation->set_rules('log_email','User Email','trim|required|valid_email');
 
 	$this->form_validation->set_rules('log_password','User Password','trim|required|alpha_numeric|min_length[4]|max_length[12]');
+	
 
 	if($this->form_validation->run() == false){
 		echo validation_errors();
@@ -225,6 +243,7 @@ public function loginAction(){
 			$ans_users=$this->project_model->getuserdata($_POST['log_email']);
 			if($ans_users[0]['log_status']==0){
 				echo "verfiy your account";
+
 			}
 			else{
 				$this->session->set_userdata("log_id",$ans_users[0]['log_id']);
@@ -232,7 +251,8 @@ public function loginAction(){
 			$this->session->set_userdata("log_mobile",$ans_users[0]['log_mobile']);
 			$this->session->set_userdata("log_email",$ans_users[0]['log_email']);
 			$this->session->set_userdata("log_status",$ans_users[0]['log_status']);
-			echo "ok";
+			echo "ok#".$ans_users[0]['log_status']."#".$ans_users[0][
+				'log_name'];
 
 			
 			// print_r($ans_users);
@@ -246,6 +266,63 @@ public function loginAction(){
 	}
 
 } 
+
+function logout(){
+
+	$this->session->unset_userdata("log_id");
+			$this->session->unset_userdata("log_name");
+			$this->session->unset_userdata("log_mobile");
+			$this->session->unset_userdata("log_email");
+			$this->session->unset_userdata("log_status");
+			$this->session->sess_destroy();
+			redirect("http://localhost/eshopperci/index.html");
+
 }
 
-?>s
+
+function check_users(){
+	if(!$this->session->userdata("log_id") && $this->session->userdata("log_id")==""){
+		echo 0;
+
+	}
+	else{
+		echo 1; 
+	}
+}
+
+
+
+function updateAction(){
+	print_r($_POST);
+
+	// $this->form_validation->set_rules('current_pass','current password','trim|required|alpha_numeric|min_length[4]|max_length[12]');
+
+	// $this->form_validation->set_rules('new_pass','new Password','trim|required|alpha_numeric|min_length[4]|max_length[12]');
+   
+ //   $this->form_validation->set_rules('cnew_pass','comfirm Password Comfirmation','required|matches[new_pass]');
+exit;
+	
+	if($this->form_validation->run() == false){
+		echo validation_errors();
+	}
+	else if($_POST['current_pass']==$_POST['new_pass']){
+		echo "new pass is same as current pass";
+	}
+	else{
+		print_r($_POST);
+		$current = do_hash($_POST['current_pass']);
+		$new = do_hash($_POST['new_pass']);
+		if($this->project_model->check_cpass($current,$this->session->userdata("log_id"))){
+
+			if($this->project_model->update_cpass($new,$this->session->userdata("log_id"))){
+				echo "password Updated";
+			}
+		}
+		else{
+			echo "current password mismatch";
+		}
+	}
+
+}
+}
+?>

@@ -40,7 +40,9 @@
  		         }
  	}
 function insertData($table,$data){
-	return $this->db->insert($table,$data);
+	 $this->db->insert($table,$data);
+	 return $this->db->insert_id();
+
 }
 
 function auth($data){
@@ -67,6 +69,28 @@ function auth($data){
 	function getuserdata($email){
 		return $this->db->get_where("login",array("log_email"=>$email))->
 		result_array();
+	}
+
+	function update_status($status,$id){
+		$this->db->where("log_id",$id);
+		$data = array("log_status"=>$status);
+		$this->db->update("login",$data);
+	}
+
+	function check_cpass($pass,$id){
+
+		$ans = $this->db->select("log_password")->get_where("login"
+			,array("log_id"=>$id))->result_array();
+		return ($ans[0]['log_password'] == $pass)?true:false;
+}
+
+	function update_cpass($pass,$id){
+                
+                $data = array(
+                	"log_password"=>$pass
+                );
+                $this->db->where("log_id",$id);
+                return $this->db->update("login",$data);
 	}
 
 }
