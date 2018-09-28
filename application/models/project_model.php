@@ -92,7 +92,33 @@ function auth($data){
                 $this->db->where("log_id",$id);
                 return $this->db->update("login",$data);
 	}
+    
+    function check_email($email){
+    	return $this->db->select("log_mobile")->get_where("login",
+             array("log_email"=>$email))->result_array();
+    }
 
+    function update_otp($email,$otp){
+    	$data = array(
+    		"log_otp"=>$otp);
+    	$this->db->where("log_email",$email);
+    	return $this->db->update("login",$data);
+    }
+
+    function check_otp($email,$otp){
+    	return $this->db->select("log_otp")->get_where("login",array("log_email"=>
+    		$email))->result_array();
+    }
+
+    function update_password_for_forgot($email,$pass){
+
+    	$data = array(
+          "log_password"=>$pass,
+          "log_otp"=>""
+    	);
+    	$this->db->where("log_email",$email);
+    	return $this->db->update("login",$data);
+    }
 }
 
 ?>

@@ -293,14 +293,14 @@ function check_users(){
 
 
 function updateAction(){
-	print_r($_POST);
+	//print_r($_POST);
 
-	// $this->form_validation->set_rules('current_pass','current password','trim|required|alpha_numeric|min_length[4]|max_length[12]');
+	$this->form_validation->set_rules('current_pass','current password','trim|required|alpha_numeric|min_length[4]|max_length[12]');
 
-	// $this->form_validation->set_rules('new_pass','new Password','trim|required|alpha_numeric|min_length[4]|max_length[12]');
+	$this->form_validation->set_rules('new_pass','new Password','trim|required|alpha_numeric|min_length[4]|max_length[12]');
    
- //   $this->form_validation->set_rules('cnew_pass','comfirm Password Comfirmation','required|matches[new_pass]');
-exit;
+   $this->form_validation->set_rules('cnew_pass','comfirm Password Comfirmation','required|matches[new_pass]');
+
 	
 	if($this->form_validation->run() == false){
 		echo validation_errors();
@@ -324,5 +324,77 @@ exit;
 	}
 
 }
+public function forgot1_action(){
+	//print_r($_POST);
+	//exit;
+	$email = $this->input->post('log_email');
+	$this->form_validation->set_rules('log_email','Email ID',
+		'trim|required|valid_email');
+	if($this->form_validation->run() == false){
+		echo validation_errors();
+	}
+	else{
+		$mob = $this->project_model->check_email($email);
+		//print_r($mob);
+		if(empty($mob)){
+			echo "emailid doesnt exits";
+		}
+		else{
+			$data = $mob[0]['log_mobile'];
+			//echo $data;
+			$rand = random_string('alnum',6);
+			//echo $rand;
+
+			//send sms
+
+			if($this->project_model->update_otp($email,$rand))
+			{
+				$this->session->set_userdata("emailid_for_otp",$email);
+				echo "ok";
+			}
+		}
+	}
+}
+
+public function forgot2_action(){
+	//print_r($_POST);
+	$otp = $this->input->post('log_otp');
+	if(empty($otp)){
+		echo "please enter otp";
+	}
+	else{
+		$email = $this->session->userdata("emailid_for_otp");
+		$ans = $this->project_model->check_otp($email,$otp);
+		//print_r($ans);
+		if($otp == $ans[0]['log_otp']){
+			echo "ok";
+		}
+		else{
+			echo "invalid otp";
+		}
+	}
+}
+
+function forgot3_action(){
+
+
+   $this->form_validation->set_rules('log_password','User Password','trim|required|alpha_numeric|min_length[4]|max_length[12]');
+	
+ $this->form_validation->set_rules('log_cpassword',' Password Comfirmation','required|matches[log_password]');
+
+    if($this->form_validation->run() == false){
+    	echo validation_errors();
+    }
+    else{
+    	$pass = do_hash($this->input->post('log_cpassword'));
+    	$email = $this->session->userdata("emailid_for_otp");
+    	if($this->project_model->update_password_for_forgot($email,$pass)){
+    		$this->session->unset_userdata("emailid_for_otp");
+    		echo "ok";
+    	}
+    }
+
+}
+
 }
 ?>
