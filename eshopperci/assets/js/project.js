@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-	if(localStorage.cartcnt){
+    if(localStorage.cartcnt){
 
 		$(".cartcnt").html(localStorage.cartcnt)
 	}
@@ -8,6 +8,28 @@ $(document).ready(function(){
 
 		$(".cartcnt").html(0);
 	}
+
+	$.get(curl+"check_users",function(data,status){
+		//console.log(data)
+		if(data==0){
+			console.log(localStorage);
+
+			localStorage.removeItem("username");
+			localStorage.removeItem("userstatus");
+	var link = "<li><a href='cart.html'><i class='fa fa-shopping-cart'></i>Cart(<span class='cartcnt'></span>)</a></li><li><a href='forgot_password.html'><i class='fa fa-shopping-cart'></i>Forgot Password(<span class='cartcnt'></span>)</a></li><li><a href='login.html'><i class='fa fa-lock'></i>Login</a></li>";
+
+		}
+		else{
+			uname = localStorage.username
+			ustatus = localStorage.userstatus
+	var link ="<li><a href='cart.html'>Cart(<span class='cartcnt'></span>)</a></li><li><a href='change_password.html'>Password</a></li><li><a href='"+curl+"logout'><i class='fa fa-lock'></i>Logout ("+uname+")</a></li>";
+
+		}
+
+		$("#links").html(link)
+	});
+
+	
 
 	//console.log(curl)
 
@@ -161,9 +183,98 @@ $(document).ready(function(){
 			success:function(response){
 
 				//console.log(response)
-				$(".err_login").html(response);
+				//ok#1
+				ans = response.split("#")
+				if(ans[0]== "ok"){
+					// consloe.log(ans[2])
+					// consloe.log(ans[1])
+					// consloe.log(ans[0])
+					localStorage.setItem("userstatus",ans[1])
+					localStorage.setItem("username",ans[2])
+					window.location.href="index.html"
+				}
+				else{
+					$(".err_login").html(response);
 			}
-		})
+				
+			}
+		});
+	});
+
+	$("#update_form").submit(function(obj){
+		obj.preventDefault();
+		//alert("submitted");
+
+		$.ajax({
+			type:"post",
+			data:$(this).serialize(),
+			url:curl+ "updateAction",
+			success:function(response){
+
+				//console.log(response)
+				$(".err_update").html(response);
+			}
+		});
+	});
+
+	$("#form3,#form2").hide();
+	$(".btn-forgot1").click(function(){
+		$.ajax({
+			type:"post",
+			data:$("#forgot1_form").serialize(),
+			url:curl+"forgot1_action",
+			success:function(response){
+
+				//console.log(response)
+				if(response=="ok"){
+					 $("#form1,#form2").slideToggle();
+				}
+				else{
+					$(".err_forgot1").html(response);
+				}
+				
+			}
+	});
+	})
+	$(".btn-forgot2").click(function(){
+		$.ajax({
+			type:"post",
+			data:$("#forgot2_form").serialize(),
+			url:curl+"forgot2_action",
+			success:function(response){
+
+				//console.log(response)
+				if(response=="ok"){
+					 $("#form3,#form2").slideToggle();
+				}
+				else{
+					$(".err_forgot2").html(response);
+				}
+				
+			}
+	});
 	})
 
-})
+	$(".btn-forgot3").click(function(){
+		$.ajax({
+			type:"post",
+			data:$("#forgot3_form").serialize(),
+			url:curl+"forgot3_action",
+			success:function(response){
+
+				//console.log(response)
+				if(response=="ok"){
+					$(".err_forgot3").html("password updated and redirecting to login page.....");
+					setTimeout(function(){
+						window.location.href="index.html"
+					},2000)
+				}
+				else{
+					$(".err_forgot3").html(response);
+				}
+				
+			}
+	});
+	})
+
+});
