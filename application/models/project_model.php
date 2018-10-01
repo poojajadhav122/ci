@@ -119,6 +119,8 @@ function auth($data){
     	$this->db->where("log_email",$email);
     	return $this->db->update("login",$data);
     }
+
+    
 }
 
 ?>

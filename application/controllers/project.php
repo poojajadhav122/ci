@@ -396,5 +396,56 @@ function forgot3_action(){
 
 }
 
+public function category_action(){
+	$data = $this->input->post('ca_name');
+	//print_r($data);
+	if(empty($data)){
+		echo "please enter category";
+	}
+	else{
+		if($this->project_model->insertData("categories",$_POST))
+		{
+			echo "category Added";
+		}
+	}
 }
-?>
+
+
+public function product_action(){
+	print_r($_POST);
+	print_r($_FILES);
+}
+
+public function get_brands_option()
+	{
+		//$this->load->model('project_model');
+		$ans = $this->project_model->getRecords("brands");
+		//print_r($ans);
+		if(is_array($ans)){
+			$str="";
+			$str = $str ."<option value=''>please select brand</option>";
+			foreach($ans as $val){
+				//print_r($val);
+				$str = $str . "<option value= '" .$val->br_id."'>".$val->br_name."</option>";
+			}
+			echo $str;
+		}
+	}
+
+	public function get_categories_option()
+	{
+		//$this->load->model('project_model');
+		$ans = $this->project_model->getrecords("categories");
+		//print_r($ans);
+		if(is_array($ans)){
+		$str="";
+			$str = $str ."<option value=''>please select categories</option>";
+			foreach($ans as $val){
+				//print_r($val);
+				$str = $str . "<option value= '" .$val->ca_id."'>".$val->ca_name."</option>";
+			}
+			echo $str;
+		}
+	}	
+
+}?>
