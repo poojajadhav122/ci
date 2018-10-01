@@ -22,7 +22,7 @@ $(document).ready(function(){
 		else{
 			uname = localStorage.username
 			ustatus = localStorage.userstatus
-	var link ="<li><a href='cart.html'>Cart(<span class='cartcnt'></span>)</a></li><li><a href='change_password.html'>Password</a></li><li><a href='"+curl+"logout'><i class='fa fa-lock'></i>Logout ("+uname+")</a></li>";
+	var link ="<li><a href='cart.html'>Cart(<span class='cartcnt'></span>)</a></li><li><a href='add_category.html'>Category(<span class='cartcnt'></span>)</a></li><li><a href='add_product.html'>Product(<span class='cartcnt'></span>)</a></li><li><a href='change_password.html'>Password</a></li><li><a href='"+curl+"logout'><i class='fa fa-lock'></i>Logout ("+uname+")</a></li>";
 
 		}
 
@@ -276,5 +276,38 @@ $(document).ready(function(){
 			}
 	});
 	})
+
+
+	$(".btn-category").click(function(){
+		$.ajax({
+                 type:"post",
+                 data:$("#category_form").serialize(),
+                 url:curl+"category_action",
+                 success:function(response){
+                 	//console.log(response)
+                 	$(".err_category").html(response);
+                 }
+		});
+	})
+
+	$.get(curl+ "get_categories_option", function(data, status){
+
+		//console.log(status)
+		if(status=="success"){
+
+			$("#p_caid").html(data)
+		}
+	});
+
+	$.get(curl+ "get_brands_option", function(data, status){
+
+		//console.log(status)
+		if(status=="success"){
+
+			$("#p_brid").html(data)
+		}
+	});
+
+
 
 });
