@@ -153,7 +153,9 @@
         <div class="col-sm-4 col-sm-offset-1">
           <div class="login-form"><!--login form-->
             <h2>Login to your account</h2>
-            <form method="post" action="http://localhost/pooja/ciproject/index.php/project/product_action/" enctype="multipart/form-data">
+            <!-- <form method="post" action="http://localhost/pooja/ciproject/index.php/project/product_action/" enctype="multipart/form-data"> -->
+
+              <form id="product_data">
               <input placeholder="name" type="text" name="p_name">
 
               <input placeholder="amount" type="text" name="p_amount">
@@ -174,9 +176,9 @@
               <br>
               <textarea name="p_desc" placeholder="description"></textarea>
 
-              <button type="submit" class="btn btn-default">Add Product</button>
+              <button type="button" class="btn btn-default btn-product">Add Product</button>
             </form>
-            <div class="err_category"></div>
+            <div class="err_product"></div>
           </div><!--/login form-->
         </div>
        

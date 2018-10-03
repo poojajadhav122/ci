@@ -308,6 +308,22 @@ $(document).ready(function(){
 		}
 	});
 
+//<form method="post" action="http://localhost/pooja/ciproject/index.php/project/product_action/" enctype="multipart/form-data">
+$(".btn-product").click(function(){
+	var formobj = document.getElementById("product_data");
+	var formDataObj = new FormData(formobj);
+		$.ajax({
+                 type:"post",
+                 data:formDataObj,
+                 contentType:false,
+                 processData:false,
+                 url:curl+"product_action",
+                 success:function(response){
+                 	//console.log(response)
+                 	$(".err_product").html(response);
+                 }
+		});
+	})
 
 
 });
