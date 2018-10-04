@@ -48,7 +48,7 @@ class project extends CI_Controller{
 			$str ="";
 			foreach($ans as $val){
 				//print_r($val);
-				$str = $str ."<div class='col-sm-4'><div class='product-image-wrapper'><div class='single-products'><div class='productinfo text-center'><img src='".base_url().$val->p_imgpath."' alt='' />
+				$str = $str ."<div class='col-sm-4'><div class='product-image-wrapper'><div class='single-products'><div class='productinfo text-center'><img src='".base_url().'assets/uploads/'.$val->p_imgpath."' alt='' />
 <h2>".$val->p_amount."</h2><p>".$val->p_name."</p><a href='#' class='btn btn-default add-to-cart'><i class='fa fa-shopping-cart'></i>Add to cart</a></div><div class='product-overlay'><div class='overlay-content'><h2>$56</h2><p>Easy Polo Black Edition</p><a href='#' class='btn btn-default add-to-cart' for='".$val->p_id."'><i class='fa fa-shopping-cart'></i>Add to cart</a></div></div></div><div class='choose'><ul class='nav nav-pills nav-justified'><li><a href='#'><i class='fa fa-plus-square'></i>Add to wishlist</a></li>
 <li><a href='#'><i class='fa fa-plus-square'></i>Add to compare</a></li></ul></div></div></div>";
 			}
@@ -71,7 +71,7 @@ public  function get_products_brandwise()
 			$str ="";
 			foreach($ans as $val){
 				//print_r($val);
-				$str = $str ."<div class='col-sm-4'><div class='product-image-wrapper'><div class='single-products'><div class='productinfo text-center'><img src='".base_url().$val->p_imgpath."' alt='' />
+				$str = $str ."<div class='col-sm-4'><div class='product-image-wrapper'><div class='single-products'><div class='productinfo text-center'><img src='".base_url().'assets/uploads/'.$val->p_imgpath."' alt='' />
 <h2>".$val->p_amount."</h2><p>".$val->p_name."</p><a href='#' class='btn btn-default add-to-cart' for='".$val->p_id."'><i class='fa fa-shopping-cart'></i>Add to cart</a></div><div class='product-overlay'><div class='overlay-content'><h2>$56</h2><p>Easy Polo Black Edition</p><a href='#' class='btn btn-default add-to-cart'><i class='fa fa-shopping-cart'></i>Add to cart</a></div></div></div><div class='choose'><ul class='nav nav-pills nav-justified'><li><a href='#'><i class='fa fa-plus-square'></i>Add to wishlist</a></li>
 <li><a href='#'><i class='fa fa-plus-square'></i>Add to compare</a></li></ul></div></div></div>";
 			}
@@ -444,7 +444,11 @@ public function product_action(){
                 }
                 else
                 {
-                	echo "ok";
+                	//echo "ok";
+                	$_POST['p_imgpath'] = $_FILES['p_file']['name'];
+                	//print_r($_POST);
+                	$this->project_model->insertData("products",$_POST);
+                	echo "product Added";
                 }
 
 	  }
